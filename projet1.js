@@ -1,27 +1,34 @@
 // Récupération des données saisies 
 document.getElementById("show-login").addEventListener("click", function() {
-  document.getElementById("login-form").classList.remove("hidden");
-  document.getElementById("signup-form").classList.add("hidden");
+  document.getElementById("loginform").classList.remove("hidden");
+  document.getElementById("signupform").classList.add("hidden");
 });
 
 document.getElementById("show-signup").addEventListener("click", function() {
-  document.getElementById("signup-form").classList.remove("hidden");
-  document.getElementById("login-form").classList.add("hidden");
+  document.getElementById("signupform").classList.remove("hidden");
+  document.getElementById("loginform").classList.add("hidden");
 });
 
-//Récupération et ajout dans la base de l'inscription
-function signup() {
-  const username = document.getElementById("signup-username").value;
-  const password = document.getElementById("signup-password").value;
+        // Fonction pour gérer l'inscription
+        document.getElementById('registerForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('registerUsername').value;
+            const password = document.getElementById('registerPassword').value;
 
-  if (username && password) {
-      localStorage.setItem("nom du compte", username);
-      localStorage.setItem("mot de passe", password);
-      alert("Inscription réussie!");
-  } else {
-      alert("Veuillez renseignez tous les champs.");
-  }
-}
+            const response = await fetch('http://localhost:3000/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Inscription réussie !');
+            } else {
+                alert(`Erreur : ${data.message}`);
+            }
+        });
 
 //Changement d'arrière plan
 document.addEventListener('DOMContentLoaded', function() {
@@ -40,20 +47,26 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// Récupération des éléments de la connexion
-function login() {
-  const username = document.getElementById("login-username").value;
-  const password = document.getElementById("login-password").value;
+        // Fonction pour gérer la connexion
+        document.getElementById('loginForm').addEventListener('submit', async function(event) {
+            event.preventDefault();
+            
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
 
-  const storedUsername = localStorage.getItem("username");
-  const storedPassword = localStorage.getItem("password");
-//Vérification de la connexion
-  if (username === storedUsername && password === storedPassword) {
-      alert("Connexion réussie!");
-  } else {
-      alert("Mot de passe ou pseudonyme invalide.");
-  }
-}
+            const response = await fetch('http://localhost:3000/login', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const data = await response.json();
+            if (response.ok) {
+                alert('Connexion réussie !');
+            } else {
+                alert(`Erreur : ${data.message}`);
+            }
+        });
 
 let attempts = 0;
 const maxAttempts = 5;

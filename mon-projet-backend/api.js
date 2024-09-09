@@ -38,6 +38,7 @@ app.post('/login', async (req, res) => {
     // Vérifier si l'utilisateur existe dans la base de données
     const sql = 'SELECT * FROM user WHERE Login = ?';
     db.query(sql, [username], (err, results) => {
+        console.log(username);
         if (err) {
             return res.status(500).json({ message: 'Erreur serveur' });
         }
