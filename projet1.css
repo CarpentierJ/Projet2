@@ -57,6 +57,7 @@ button:hover {
   height: 100%;
   object-fit: cover; /* Remplit l'écran sans déformer l'image */
   opacity: 0;
+  transition: opacity 1s ease-in-out;
   animation: changeBackground 5s infinite;
 }
 
