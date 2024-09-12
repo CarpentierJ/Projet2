@@ -1,8 +1,10 @@
 const express = require('express');
 const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
+const cors = require('cors');
 const app = express();
 
+app.use(cors());
 app.use(express.json()); // Permet à l'application d'analyser le JSON dans le corps des requêtes
 
 // Connexion à la base de données MySQL
@@ -35,6 +37,7 @@ app.get('/api/user', (req, res) => {
 // Route POST pour la connexion
 app.post('/login', async (req, res) => {
     const { username, password } = req.body;
+    console.log("tentative de connexion")
     // Vérifier si l'utilisateur existe dans la base de données
     const sql = 'SELECT * FROM user WHERE Login = ?';
     db.query(sql, [username], (err, results) => {
@@ -54,6 +57,7 @@ app.post('/login', async (req, res) => {
         }
 
         res.status(200).json({ message: 'Connexion réussie' });
+        console.log("connecté");
     });
 });
 
