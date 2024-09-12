@@ -46,7 +46,13 @@ document.getElementById('loginform').addEventListener('submit', async function(e
 
     const data = await response.json();
     if (response.ok) {
-        alert('Connexion réussie !');
+        if (localStorage != 0){
+            alert("vous êtes déjà connecté !")
+        }
+        else {
+            localStorage.setItem('token', data.token);
+            alert('Connexion réussie !');
+        }
     } else {
         alert(`Erreur : ${data.message}`);
     }

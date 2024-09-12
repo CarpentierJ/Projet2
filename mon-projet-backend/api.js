@@ -3,6 +3,8 @@ const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
 const app = express();
+const jwt = require('jsonwebtoken');
+const secretKey = 'keepass';
 
 app.use(cors());
 app.use(express.json()); // Permet à l'application d'analyser le JSON dans le corps des requêtes
@@ -14,7 +16,6 @@ const db = mysql.createConnection({
     password: 'root',
     database: 'utilisateur'
 });
-
 db.connect(err => {
     if (err) {
         console.error('Erreur de connexion à la base de données :', err);
@@ -34,10 +35,26 @@ app.get('/api/user', (req, res) => {
     });
 });
 
-// Route POST pour la connexion
-app.post('/login', async (req, res) => {
+function checkToken(req, res, next) {
+    const token = req.headers['authorization'];
+    
+    if (token) {
+        jwt.verify(token.split(' ')[1], secretKey, (err, decoded) => {
+            if (err) {
+                return res.status(401).json({ message: 'Token invalide ou expiré' });
+            }
+            // Si le token est valide, informer que l'utilisateur est déjà connecté
+            return res.status(400).json({ message: 'Déjà connecté' });
+        });
+    } else {
+        next();
+    }
+}
+
+app.post('/login', checkToken, async (req, res) => {
     const { username, password } = req.body;
-    console.log("tentative de connexion")
+    console.log("tentative de connexion");
+
     // Vérifier si l'utilisateur existe dans la base de données
     const sql = 'SELECT * FROM user WHERE Login = ?';
     db.query(sql, [username], (err, results) => {
@@ -48,15 +65,29 @@ app.post('/login', async (req, res) => {
         if (results.length === 0) {
             return res.status(400).json({ message: 'Utilisateur non trouvé' });
         }
+
         const user = results[0];
         console.log(results);
+
         // Comparer les mots de passe
         const isMatch = bcrypt.compareSync(password, user.MDP);
         if (!isMatch) {
             return res.status(400).json({ message: 'Mot de passe incorrect' });
         }
 
-        res.status(200).json({ message: 'Connexion réussie' });
+        // Si les identifiants sont corrects, générer un token
+        const token = jwt.sign(
+            { id: user.id, username: user.Login },  // Payload (les données à inclure dans le token)
+            secretKey,                              // Clé secrète pour signer le token
+            { expiresIn: '1h' }                     // Durée de validité du token (ici 1 heure)
+        );
+
+        // Envoyer le token au client
+        res.status(200).json({ 
+            message: 'Connexion réussie', 
+            token 
+        });
+
         console.log("connecté");
     });
 });

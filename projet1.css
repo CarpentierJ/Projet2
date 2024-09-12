@@ -6,6 +6,7 @@ body {
   height: 100vh;
   background-color: #0000005d;
   margin: 0;
+  overflow: hidden; /* Empêche le défilement */
 }
 
 .container {
@@ -14,6 +15,7 @@ body {
   padding: 30px;
   border-radius: 10px;
   box-shadow: 0 4px 8px rgb(255, 255, 255);
+  z-index: 1; /* S'assure que le contenu est au-dessus du fond d'écran */
 }
 
 h1 {
@@ -40,40 +42,39 @@ button:hover {
 }
 
 .background-images {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    z-index: -1;
-    animation: changeBackground 5s infinite;
-}
-
-
-@keyframes changeBackground {
-    0%, 100% {
-        opacity: 0;
-    }
-    10%, 90% {
-        opacity: 1;
-    }
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1; /* S'assure que les images de fond sont derrière le contenu */
+  overflow: hidden;
 }
 
 .background-images img {
-    width: 100%;
-    height: auto;
-    object-fit: cover;
-    position: absolute
-    ;
-    top: 0;
-    left: 0;
-    display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  object-fit: cover; /* Remplit l'écran sans déformer l'image */
+  opacity: 0;
+  animation: changeBackground 5s infinite;
 }
 
-.background-images img:first-child {
-    display: block;
+.background-images img.active {
+  opacity: 1;
 }
 
+/* Animation pour faire défiler les images */
+@keyframes changeBackground {
+  0%, 100% {
+    opacity: 0;
+  }
+  10%, 90% {
+    opacity: 1;
+  }
+}
+
+/* Style des champs de texte */
 input[type="text"], input[type="password"] {
   display: block;
   width: 100%;
@@ -88,10 +89,9 @@ input[type="text"], input[type="password"] {
 }
 
 .error {
-    color : red;
+  color: red;
 }
 
-.sucess {
-    color : green;
+.success {
+  color: green;
 }
-
