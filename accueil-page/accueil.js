@@ -26,3 +26,12 @@ document.addEventListener('DOMContentLoaded', function() {
         window.location.href = "../index.html"; // Rediriger vers la page de connexion
     }
 });
+
+/*Prenom accueil*/
+const prenomtext = document.getElementById('prenom');
+const username = document.getElementById('loginUsername').value;
+
+if (token) {
+    
+}
+prenomtext.textContent = username;

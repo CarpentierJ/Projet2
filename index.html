@@ -28,10 +28,17 @@
         </div>
 
         <div>
-            <form id="registerform" class="form-container hidden">
+            <form id="registerform" class="form-container hidden" enctype="multipart/form-data">
                 <h2>S'inscrire</h2>
                 <input type="text" id="registerUsername" placeholder="Nom du compte" required>
                 <input type="password" id="registerPassword" placeholder="Mot de passe" required>
+                <input type="file" id="PDP" accept="image/*">
+    
+                <!-- Zone de prévisualisation de l'image -->
+                <div id="preview-container">
+                    <img id="preview" src="#" alt="Aperçu de l'image" style="display: none; max-width: 150px;">
+                </div>
+                <br>
                 <button type="submit">S'inscrire</button>
             </form>
         </div>

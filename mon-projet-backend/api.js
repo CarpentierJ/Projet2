@@ -94,28 +94,34 @@ app.post('/login', checkToken, async (req, res) => {
 
 // Route POST pour l'inscription
 app.post('/register', async (req, res) => {
-    const { username, password } = req.body;
+    const { username, password, capture } = req.body;
 
     // Vérifier si le nom d'utilisateur existe déjà
     const sqlSelect = 'SELECT * FROM user WHERE Login = ?';
     db.query(sqlSelect, [username], (err, results) => {
         if (err) {
-            return res.status(500).json({ message: 'Erreur serveur' });
+            return res.status(500).json({ message: 'Erreur serveur lors de la vérification de l\'utilisateur' });
         }
+
         if (results.length > 0) {
             return res.status(400).json({ message: 'Nom d\'utilisateur déjà pris' });
         }
 
-        // Si l'utilisateur n'existe pas, hasher le mot de passe
+        // Hasher le mot de passe
         const hashedPassword = bcrypt.hashSync(password, 10);
 
+        // Gérer l'absence de capture (photo de profil)
+        const pdpValue = capture ? capture : '../images/logo_defaut.jpg'; // Utilise une image par défaut si aucune capture n'est fournie
+
         // Insérer le nouvel utilisateur dans la base de données
-        const sqlInsert = 'INSERT INTO user (Login, MDP, Email, PDP) VALUES (?, ?, "nul", "nul")';
-        db.query(sqlInsert, [username, hashedPassword], (err, result) => {
+        const sqlInsert = 'INSERT INTO user (Login, MDP, Email, PDP) VALUES (?, ?, "nul", ?)';
+        db.query(sqlInsert, [username, hashedPassword, pdpValue], (err, result) => {
             if (err) {
                 console.log(err);
-                return res.status(500).json({ message: 'Erreur lors de l\'inscription' });
+                return res.status(500).json({ message: 'Erreur lors de l\'inscription dans la base de données' });
             }
+
+            // Succès de l'inscription
             res.status(201).json({ message: 'Inscription réussie', userId: result.insertId });
         });
     });

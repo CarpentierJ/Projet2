@@ -9,6 +9,30 @@ document.getElementById("show-signup").addEventListener("click", function() {
   document.getElementById("loginform").classList.add("hidden");
 });
 
+
+// Récupération du champ file et de la zone de prévisualisation
+document.getElementById('PDP').addEventListener('change', function(event) {
+    const file = event.target.files[0];  // Récupère le premier fichier sélectionné
+    
+    if (file) {
+        const reader = new FileReader();  // Utilise FileReader pour lire le contenu de l'image
+        
+        reader.onload = function(e) {
+            // Une fois le fichier chargé, on affiche l'image dans le tag <img>
+            const preview = document.getElementById('preview');
+            preview.src = e.target.result;
+            preview.style.display = 'block';  // Affiche l'image
+        };
+        
+        reader.readAsDataURL(file);  // Lis le fichier comme une URL de données
+    } else {
+        // Si aucun fichier n'est sélectionné, cache à nouveau l'image
+        const preview = document.getElementById('preview');
+        preview.style.display = 'none';
+        preview.src = '#';
+    }
+});
+
 //----------------------------------------------INSCRIPTION-----------------------------------------------------//
 
 
@@ -18,11 +42,13 @@ document.getElementById('registerform').addEventListener('submit', async functio
             
     const username = document.getElementById('registerUsername').value;
     const password = document.getElementById('registerPassword').value;
+    const capture = document.getElementById('PDP').value;
+    console.log(capture);
 
     const response = await fetch('http://192.168.64.194:3000/register', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password })
+        body: JSON.stringify({ username, password, capture })
     });
 
     const data = await response.json();
