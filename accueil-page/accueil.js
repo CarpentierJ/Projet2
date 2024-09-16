@@ -28,10 +28,15 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 /*Prenom accueil*/
-const prenomtext = document.getElementById('prenom');
-const username = document.getElementById('loginUsername').value;
+document.addEventListener('DOMContentLoaded', function() {
+    // Vérifier si le token est présent dans le localStorage
+   
+    const saveusername = localStorage.getItem('storedusername');
 
-if (token) {
-    
-}
-prenomtext.textContent = username;
+    if (saveusername) {
+        console.log(saveusername);
+        const prenomtext = document.getElementById('prenom');
+        prenomtext.textContent = saveusername;
+    }
+});
+

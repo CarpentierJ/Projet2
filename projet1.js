@@ -36,19 +36,29 @@ document.getElementById('PDP').addEventListener('change', function(event) {
 //----------------------------------------------INSCRIPTION-----------------------------------------------------//
 
 
-        // Fonction pour gérer l'inscription
+// Fonction pour gérer l'inscription
 document.getElementById('registerform').addEventListener('submit', async function(event) {
     event.preventDefault();
-            
+
     const username = document.getElementById('registerUsername').value;
     const password = document.getElementById('registerPassword').value;
-    const capture = document.getElementById('PDP').value;
-    console.log(capture);
+    const fileInput = document.getElementById('PDP');  // Récupérer l'élément input file
+    const file = fileInput.files[0];  // Récupérer le premier fichier sélectionné
 
+    // Utiliser FormData pour envoyer les données
+    const formData = new FormData();
+    formData.append('username', username);
+    formData.append('password', password);
+
+    // Ajouter l'image à FormData seulement si un fichier a été sélectionné
+    if (file) {
+        formData.append('capture', file);
+    }
+
+    // Effectuer la requête POST avec FormData
     const response = await fetch('http://192.168.64.194:3000/register', {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ username, password, capture })
+        body: formData,  // Pas besoin de spécifier les headers, fetch les gère automatiquement pour FormData
     });
 
     const data = await response.json();
@@ -84,6 +94,7 @@ document.getElementById('loginform').addEventListener('submit', async function(e
     console.log("Lancement login");
 
     const username = document.getElementById('loginUsername').value;
+    localStorage.setItem('storedusername', username);
     const password = document.getElementById('loginPassword').value;
 
     try {

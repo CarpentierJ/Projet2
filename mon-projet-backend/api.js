@@ -5,7 +5,30 @@ const cors = require('cors');
 const app = express();
 const jwt = require('jsonwebtoken');
 const secretKey = 'keepass';
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
 
+// Créer le dossier 'uploads' s'il n'existe pas
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+    fs.mkdirSync(uploadDir, { recursive: true });
+}
+
+// Configuration de multer pour le stockage des fichiers
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, uploadDir);
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + path.extname(file.originalname));
+    }
+});
+
+const upload = multer({ storage: storage });
+
+// Middleware pour servir les fichiers statiques depuis le dossier 'uploads'
+app.use('/uploads', express.static(uploadDir));
 app.use(cors());
 app.use(express.json()); // Permet à l'application d'analyser le JSON dans le corps des requêtes
 
@@ -82,6 +105,7 @@ app.post('/login', checkToken, async (req, res) => {
             { expiresIn: '1h' }                     // Durée de validité du token (ici 1 heure)
         );
 
+
         // Envoyer le token au client
         res.status(200).json({ 
             message: 'Connexion réussie', 
@@ -92,9 +116,10 @@ app.post('/login', checkToken, async (req, res) => {
     });
 });
 
-// Route POST pour l'inscription
-app.post('/register', async (req, res) => {
-    const { username, password, capture } = req.body;
+// Route POST pour l'inscription avec multer pour gérer les fichiers
+app.post('/register', upload.single('capture'), async (req, res) => {
+    const { username, password } = req.body;
+    const capture = req.file ? req.file.path : null;
 
     // Vérifier si le nom d'utilisateur existe déjà
     const sqlSelect = 'SELECT * FROM user WHERE Login = ?';
@@ -111,7 +136,7 @@ app.post('/register', async (req, res) => {
         const hashedPassword = bcrypt.hashSync(password, 10);
 
         // Gérer l'absence de capture (photo de profil)
-        const pdpValue = capture ? capture : '../images/logo_defaut.jpg'; // Utilise une image par défaut si aucune capture n'est fournie
+        const pdpValue = capture ? capture : 'uploads/pdp.jpg';
 
         // Insérer le nouvel utilisateur dans la base de données
         const sqlInsert = 'INSERT INTO user (Login, MDP, Email, PDP) VALUES (?, ?, "nul", ?)';
@@ -121,7 +146,6 @@ app.post('/register', async (req, res) => {
                 return res.status(500).json({ message: 'Erreur lors de l\'inscription dans la base de données' });
             }
 
-            // Succès de l'inscription
             res.status(201).json({ message: 'Inscription réussie', userId: result.insertId });
         });
     });

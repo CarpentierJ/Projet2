@@ -13,23 +13,69 @@ header {
     color: black;
 }
 
-nav {
+.bandeau_haut {
     display: flex;
-    justify-content: center;
-    margin-top: 20px;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    background-color: #f4f4f4;
 }
 
-nav a {
-    margin: 0 15px;
-    text-decoration: none;
-    color: #000000;
-    font-size: 18px;
-    padding: 8px 16px;
-    border-radius: 5px;
+.header-right {
+    display: flex;
+    align-items: center;
 }
 
-nav a:hover {
-    background-color: #ffffff;
+.header-right p {
+    margin-right: 10px;
+}
+
+.header-right .logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+}
+
+.header-center {
+    flex: 1;
+    text-align: center;
+}
+
+.hero {
+    display: flex;
+    align-items: stretch; /* Aligne les éléments enfants avec la hauteur du conteneur */
+    padding: 20px;
+    background-color: white;
+}
+
+.body_left, .body_right {
+    flex: 1; /* Chaque colonne prend une largeur égale */
+    padding: 10px;
+    box-sizing: border-box;
+    max-width: 50%; /* Assure que les colonnes ne dépassent pas la moitié de la largeur du conteneur */
+    overflow: hidden; /* Masque le débordement pour éviter les problèmes de mise en page */
+    word-wrap: break-word; /* Permet au texte de se renvoyer à la ligne */
+    hyphens: auto; /* Ajoute des césures automatiques pour le texte long */
+}
+
+.separator {
+    width: 1px;
+    background-color: #ccc; /* Couleur de la ligne de séparation */
+    height: 100%; /* La ligne occupe toute la hauteur du conteneur */
+    margin: 0 10px; /* Espacement autour de la ligne */
+}
+
+.body_left img, .body_right img {
+    width: 100%;
+    height: auto;
+}
+
+.hero p {
+    font-size: 24px;
+}
+
+.hero h1 {
+    font-size: 48px;
 }
 
 .container {
@@ -39,41 +85,19 @@ nav a:hover {
     text-align: center;
 }
 
-.hero {
-    display: flex;
-    justify-content: space-between;
-    align-items: flex-start;
-    padding: 20px;
-    background-color: white;
-}
-
-.body_left, .body_right {
-    flex: 1;
-    padding: 20px;
-    box-sizing: border-box;
-}
-
-.body_left {
+#about {
     text-align: left;
+    color: #000000;
 }
 
-.body_right {
+#services {
     text-align: right;
+    color: rgb(0, 0, 0);
 }
 
-.body_left img, .body_right img {
-    max-width: 100%;
-    height: auto;
-    display: block;
-    margin: 0 auto;
-}
-
-.hero p {
-    font-size: 24px;
-}
-
-.hero h1 {
-    font-size: 48px;
+#contact {
+    text-align: center;
+    color: #000000;
 }
 
 footer {
@@ -112,33 +136,4 @@ footer {
 
 #logout-button:hover {
     background-color: #a53c3c;
-}
-
-/* Styles de base pour le header */
-.bandeau_haut {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 10px;
-    background-color: #f4f4f4;
-}
-
-.header-right {
-    display: flex;
-    align-items: center;
-}
-
-.header-right p {
-    margin-right: 10px;
-}
-
-.header-right .logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-}
-
-.header-center {
-    flex: 1;
-    text-align: center;
 }
