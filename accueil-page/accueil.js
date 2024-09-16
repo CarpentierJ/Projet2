@@ -12,7 +12,7 @@ document.getElementById("logout-button").addEventListener("click", function() {
     alert('Vous avez été déconnecté.');
 
     // Rediriger l'utilisateur vers la page de connexion ou d'accueil
-    window.location.href = "index.html";
+    window.location.href = "../index.html";
 });
 
 //----------------------------Vérification de connexion-------------------------------//
@@ -23,6 +23,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Si le token n'est pas présent, rediriger vers la page de connexion
     if (!token) {
-        window.location.href = "index.html"; // Rediriger vers la page de connexion
+        window.location.href = "../index.html"; // Rediriger vers la page de connexion
     }
 });

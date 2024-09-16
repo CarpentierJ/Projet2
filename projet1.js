@@ -75,7 +75,7 @@ document.getElementById('loginform').addEventListener('submit', async function(e
             attempts = 0; // Réinitialiser les tentatives après une connexion réussie
             localStorage.removeItem('loginAttempts'); // Supprimer les tentatives du localStorage
             localStorage.removeItem('blockTime'); // Supprimer le temps de blocage du localStorage
-            window.location.href = "accueil.html";
+            window.location.href = "accueil-page/accueil.html";
         } else {
             attempts++;
             alert(`Erreur : ${data.message}`);

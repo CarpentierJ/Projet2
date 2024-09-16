@@ -1,0 +1,97 @@
+body {
+    font-family: 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f4f4f4;
+    color: #000000;
+}
+header {
+    background-color: white;
+    padding: 10px 0;
+    text-align: center;
+    color: black;
+}
+nav {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+nav a {
+    margin: 0 15px;
+    text-decoration: none;
+    color: #000000;
+    font-size: 18px;
+    padding: 8px 16px;
+    border-radius: 5px;
+}
+
+nav a:hover {
+    background-color: #ffffff;
+}
+.container {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 20px;
+    text-align: center;
+}
+.hero {
+    background-size: cover;
+    background-position: center;
+    padding: 100px 20px;
+    color: rgb(0, 0, 0);
+    background-color: white;
+}
+.hero h1 {
+    font-size: 48px;
+}
+.hero p {
+    font-size: 24px;
+}
+footer {
+position: fixed;
+bottom: 0;
+width: 100%;
+background-color: #000000;
+padding: 10px;
+color: rgb(255, 255, 255);
+box-shadow: 0 -4px 8px rgba(0, 0, 0, 0.1);
+display: flex;
+justify-content: flex-end; /* Alignement du contenu à droite */
+align-items: center;
+}
+
+/*Permet l'espacement entre le texte et le bouton déconnexion*/
+.footer-center {
+text-align: center;
+flex-grow: 1; 
+}
+
+
+.footer-right {
+margin-right: 20px; 
+}
+
+.header-right {
+margin-right: 20px;
+text-align: right;
+}
+
+.header-center {
+text-align: center;
+flex-grow: 1;
+}
+/* Bouton de déconnexion */
+#logout-button {
+padding: 10px 20px;
+background-color: #ff0000;
+color: rgb(255, 255, 255);
+border: none;
+border-radius: 5px;
+cursor: pointer;
+font-size: 16px;
+margin-right: 20px; 
+}
+
+#logout-button:hover {
+background-color: #a53c3c;
+}
