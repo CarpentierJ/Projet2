@@ -75,6 +75,7 @@ document.getElementById('loginform').addEventListener('submit', async function(e
             attempts = 0; // Réinitialiser les tentatives après une connexion réussie
             localStorage.removeItem('loginAttempts'); // Supprimer les tentatives du localStorage
             localStorage.removeItem('blockTime'); // Supprimer le temps de blocage du localStorage
+            window.location.href = "accueil.html";
         } else {
             attempts++;
             alert(`Erreur : ${data.message}`);
@@ -124,4 +125,5 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Durée d'image avant remplacement
     setInterval(changeBackgroundImage, 5000);
+
 });
