@@ -40,3 +40,49 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+//-----------------------------------récuperer l'image------------------------------------//
+
+document.addEventListener('DOMContentLoaded', () => {
+    const userId = localStorage.getItem('storedusername');
+
+    if (userId) {
+        fetch(`http://192.168.64.194:3000/user/${userId}`)
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur dans la requête: ' + response.status);
+                }
+                return response.json();
+            })
+            .then(data => {
+                const imgElement = document.getElementById('pdp');
+
+                if (imgElement) {
+                    if (data.PDP) {
+                        // Assurez-vous que `data.PDP` est une URL ou un chemin valide pour l'image
+                        // Vous pouvez éventuellement ajuster le chemin si nécessaire
+                        imgElement.src = data.PDP;
+                    } else {
+                        imgElement.alt = 'Photo de profil non disponible';
+                        console.error('Photo de profil non disponible.');
+                        console.log(data.PDP);
+                    }
+                } else {
+                    console.error("L'élément 'pdp' n'existe pas.");
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                const imgElement = document.getElementById('pdp');
+                if (imgElement) {
+                    imgElement.alt = 'Erreur lors du chargement des données.';
+                }
+            });
+    } else {
+        console.error('Aucun ID utilisateur trouvé dans le stockage local.');
+        const imgElement = document.getElementById('pdp');
+        if (imgElement) {
+            imgElement.alt = 'Aucun utilisateur trouvé.';
+        }
+    }
+});
+

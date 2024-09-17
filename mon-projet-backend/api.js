@@ -47,16 +47,26 @@ db.connect(err => {
     }
 });
 
-// Exemple de route GET pour obtenir des données
-app.get('/api/user', (req, res) => {
-    const sql = 'SELECT * FROM user';
-    db.query(sql, (err, results) => {
+app.get('/user/:id', (req, res) => {
+    const userId = req.params.id;
+
+    // Requête SQL pour récupérer les informations de l'utilisateur
+    const sql = 'SELECT PDP FROM user WHERE Login = ?';
+    db.query(sql, [userId], (err, result) => {
         if (err) {
-            return res.status(500).json({ message: 'Erreur lors de la récupération des utilisateurs' });
+            console.error('Erreur lors de la requête SQL:', err);
+            return res.status(500).json({ message: 'Erreur serveur, veuillez réessayer plus tard.' });
         }
-        res.json(results);
+
+        // Si un utilisateur est trouvé, on le renvoie
+        if (result.length > 0) {
+            return res.json(result[0]);  // Renvoie les détails de l'utilisateur
+        } else {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
     });
 });
+
 
 function checkToken(req, res, next) {
     const token = req.headers['authorization'];
@@ -136,11 +146,22 @@ app.post('/register', upload.single('capture'), async (req, res) => {
         const hashedPassword = bcrypt.hashSync(password, 10);
 
         // Gérer l'absence de capture (photo de profil)
-        const pdpValue = capture ? capture : 'uploads/pdp.jpg';
+        let pdpValue = capture ? capture : 'uploads/pdp.jpg';
+
+        // Assurez-vous que pdpValue est une chaîne de caractères avant de tenter de la manipuler
+        if (typeof pdpValue === 'string') {
+            // Retirer le chemin du système de fichiers (supposons que c'est un chemin absolu)
+            pdpValue = pdpValue.replace('/var/www/html/', '');
+        }
+
+        // Exemple de construction de l'URL complète pour la source de l'image
+        const imageUrl = `../${pdpValue}`;
+
+        console.log(pdpValue);
 
         // Insérer le nouvel utilisateur dans la base de données
         const sqlInsert = 'INSERT INTO user (Login, MDP, Email, PDP) VALUES (?, ?, "nul", ?)';
-        db.query(sqlInsert, [username, hashedPassword, pdpValue], (err, result) => {
+        db.query(sqlInsert, [username, hashedPassword, imageUrl], (err, result) => {
             if (err) {
                 console.log(err);
                 return res.status(500).json({ message: 'Erreur lors de l\'inscription dans la base de données' });
