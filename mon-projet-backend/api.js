@@ -1,13 +1,18 @@
 const express = require('express');
+const rateLimit = require('express-rate-limit');
 const mysql = require('mysql2');
 const bcrypt = require('bcryptjs');
 const cors = require('cors');
-const app = express();
 const jwt = require('jsonwebtoken');
-const secretKey = 'keepass';
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs');
+const app = express();
+
+const secretKey = 'keepass';
+
+
+//-------------------------------------DOSSIER POUR STOCKER IMAGE--------------------------------------------//
 
 // Créer le dossier 'uploads' s'il n'existe pas
 const uploadDir = path.join(__dirname, 'uploads');
@@ -29,10 +34,12 @@ const upload = multer({ storage: storage });
 
 // Middleware pour servir les fichiers statiques depuis le dossier 'uploads'
 app.use('/uploads', express.static(uploadDir));
-app.use(cors());
-app.use(express.json()); // Permet à l'application d'analyser le JSON dans le corps des requêtes
 
-// Connexion à la base de données MySQL
+//------------------------------------------------MISE EN PLACE DE L'API---------------------------------------------------------//
+
+app.use(cors());
+app.use(express.json());
+
 const db = mysql.createConnection({
     host: 'localhost',
     user: 'root',
@@ -46,6 +53,28 @@ db.connect(err => {
         console.log('Connexion réussie à la base de données MySQL');
     }
 });
+
+
+//----------------------------------LIMITEUR DE REQUETE ET CONNEXION-----------------------------------------//
+
+// Configuration du rate-limiter pour toutes les routes
+const globalLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 50, // Limite chaque IP à 100 requêtes par windowMs
+    message: 'Trop de requêtes, veuillez réessayer plus tard.',
+});
+
+// Limite spécifique pour la route de connexion
+const loginLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 5, // Limite à 5 tentatives de connexion par IP par 15 minutes
+    message: 'Trop de tentatives de connexion, veuillez réessayer dans 15 minutes.',
+});
+
+// Utiliser le rate-limiter global pour toutes les routes
+app.use(globalLimiter);
+
+//----------------------------RECUPERER IMAGE-------------------------------------------//
 
 app.get('/user/:id', (req, res) => {
     const userId = req.params.id;
@@ -67,6 +96,7 @@ app.get('/user/:id', (req, res) => {
     });
 });
 
+//-------------------------------FONCTION POUR TOKEN----------------------------------------//
 
 function checkToken(req, res, next) {
     const token = req.headers['authorization'];
@@ -84,14 +114,14 @@ function checkToken(req, res, next) {
     }
 }
 
-app.post('/login', checkToken, async (req, res) => {
-    const { username, password } = req.body;
-    console.log("tentative de connexion");
+//-------------------------------LOGIN----------------------------------//
 
-    // Vérifier si l'utilisateur existe dans la base de données
+// Route pour la connexion avec un limiteur spécifique
+app.post('/login', loginLimiter, checkToken, async (req, res) => {
+    const { username, password } = req.body;
+
     const sql = 'SELECT * FROM user WHERE Login = ?';
     db.query(sql, [username], (err, results) => {
-        console.log(username);
         if (err) {
             return res.status(500).json({ message: 'Erreur serveur' });
         }
@@ -100,31 +130,25 @@ app.post('/login', checkToken, async (req, res) => {
         }
 
         const user = results[0];
-        console.log(results);
-
-        // Comparer les mots de passe
         const isMatch = bcrypt.compareSync(password, user.MDP);
         if (!isMatch) {
             return res.status(400).json({ message: 'Mot de passe incorrect' });
         }
 
-        // Si les identifiants sont corrects, générer un token
         const token = jwt.sign(
-            { id: user.id, username: user.Login },  // Payload (les données à inclure dans le token)
-            secretKey,                              // Clé secrète pour signer le token
-            { expiresIn: '1h' }                     // Durée de validité du token (ici 1 heure)
+            { id: user.id, username: user.Login },
+            secretKey,
+            { expiresIn: '1h' }
         );
 
-
-        // Envoyer le token au client
-        res.status(200).json({ 
-            message: 'Connexion réussie', 
-            token 
+        res.status(200).json({
+            message: 'Connexion réussie',
+            token
         });
-
-        console.log("connecté");
     });
 });
+
+//-----------------------------------------------REGISTER-------------------------------------------------------//
 
 // Route POST pour l'inscription avec multer pour gérer les fichiers
 app.post('/register', upload.single('capture'), async (req, res) => {
@@ -146,7 +170,7 @@ app.post('/register', upload.single('capture'), async (req, res) => {
         const hashedPassword = bcrypt.hashSync(password, 10);
 
         // Gérer l'absence de capture (photo de profil)
-        let pdpValue = capture ? capture : 'uploads/pdp.jpg';
+        let pdpValue = capture ? capture : 'mon-projet-backend/uploads/pdp.jpg';
 
         // Assurez-vous que pdpValue est une chaîne de caractères avant de tenter de la manipuler
         if (typeof pdpValue === 'string') {

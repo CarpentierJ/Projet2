@@ -14,16 +14,23 @@ header {
 }
 
 .bandeau_haut {
+    background-image: url('../images/bandeau.jpg');
+    background-size: cover; /* Pour couvrir toute la largeur et la hauteur */
+    background-position: center;
+    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px;
+    padding: 30px;
     background-color: #f4f4f4;
+    color: rgb(0, 0, 0);
+    margin-top: 0%;
 }
 
 .header-right {
     display: flex;
     align-items: center;
+    color: white;
 }
 
 .header-right p {
