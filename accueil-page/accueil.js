@@ -8,9 +8,6 @@ document.getElementById("logout-button").addEventListener("click", function() {
     localStorage.removeItem('loginAttempts');
     localStorage.removeItem('blockTime');
 
-    // Message de confirmation
-    alert('Vous avez été déconnecté.');
-
     // Rediriger l'utilisateur vers la page de connexion ou d'accueil
     window.location.href = "../index.html";
 });

@@ -63,7 +63,7 @@ document.getElementById('registerform').addEventListener('submit', async functio
 
     const data = await response.json();
     if (response.ok) {
-        alert('Inscription réussie !');
+        return 0;
     } else {
         alert(`Erreur : ${data.message}`);
     }
@@ -108,7 +108,6 @@ document.getElementById('loginform').addEventListener('submit', async function(e
 
         if (response.ok) {
             localStorage.setItem('token', data.token);
-            alert('Connexion réussie !');
             attempts = 0; // Réinitialiser les tentatives après une connexion réussie
             localStorage.removeItem('loginAttempts'); // Supprimer les tentatives du localStorage
             localStorage.removeItem('blockTime'); // Supprimer le temps de blocage du localStorage
