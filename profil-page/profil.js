@@ -1,15 +1,42 @@
-// Gestion du changement de photo de profil
 document.getElementById('pdp').addEventListener('click', () => {
     document.getElementById('changer-photo').click();
 });
+
 document.getElementById('changer-photo').addEventListener('change', (event) => {
     const file = event.target.files[0];
     if (file) {
         const reader = new FileReader();
         reader.onload = function(e) {
-            document.getElementById('profile-pic').src = e.target.result;
-            // Ici, vous pouvez ajouter une logique pour sauvegarder la nouvelle image sur le serveur
-        }
+            const profilePicElement = document.getElementById('pdp');  // Cibler l'élément avec l'ID 'pdp'
+            if (profilePicElement) {
+                profilePicElement.src = e.target.result;  // Mettre à jour la source de l'image
+            } else {
+                console.error('Element with ID "pdp" not found.');
+            }
+
+            // Envoyer la nouvelle image vers le serveur
+            const formData = new FormData();
+            formData.append('profilePicture', file);
+            formData.append('username', localStorage.getItem('storedusername'));  // Ajouter le nom d'utilisateur
+
+            fetch('http://192.168.64.194:3000/changer-photo', {
+                method: 'PUT',
+                body: formData,
+                headers: {
+                    'Authorization': `Bearer ${localStorage.getItem('token')}`  // Si vous utilisez un token
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.message) {
+                    alert(data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de la mise à jour de la photo de profil.');
+            });
+        };
         reader.readAsDataURL(file);
     }
 });
@@ -206,43 +233,5 @@ document.getElementById("supprimer-compte").addEventListener("click", function()
     .catch(error => {
         console.error('Erreur:', error);
         alert('Une erreur est survenue lors de la suppression du compte.');
-    });
-});
-
-//----------------changer photo de profil-----------------------//
-
-document.getElementById("changer-photo").addEventListener("click", function() {
-    const formData = new FormData();
-    
-    // Récupérer le fichier sélectionné
-    const fileInput = document.getElementById("changer-photo");
-    const file = fileInput.files[0];
-
-    if (!file) {
-        alert("Veuillez sélectionner une photo de profil.");
-        return;
-    }
-
-    // Ajouter la photo de profil et le nom d'utilisateur au formData
-    formData.append('profilePicture', file);
-    formData.append('username', localStorage.getItem('storedusername'));  // Récupérer le username du localStorage
-
-    // Envoyer la requête PUT pour mettre à jour la photo de profil
-    fetch('http://192.168.64.194:3000/changer-photo', {
-        method: 'PUT',
-        body: formData,  // FormData gère automatiquement l'encodage multipart
-        headers: {
-            'Authorization': `Bearer ${localStorage.getItem('token')}`  // Si nécessaire
-        }
-    })
-    .then(response => response.json())
-    .then(data => {
-        if (data.message) {
-            alert(data.message);  // Afficher le message de réussite ou d'erreur
-        }
-    })
-    .catch(error => {
-        console.error('Erreur:', error);
-        alert('Une erreur est survenue lors de la mise à jour de la photo de profil.');
     });
 });
