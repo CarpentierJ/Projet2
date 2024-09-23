@@ -94,7 +94,9 @@ document.getElementById('loginform').addEventListener('submit', async function(e
     console.log("Lancement login");
 
     const username = document.getElementById('loginUsername').value;
+    /*******************Keep Login*************************/
     localStorage.setItem('storedusername', username);
+    /* */
     const password = document.getElementById('loginPassword').value;
 
     try {

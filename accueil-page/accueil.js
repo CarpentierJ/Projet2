@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-/*Prenom accueil*/
+/***************************************Prenom accueil*********************************************/
 document.addEventListener('DOMContentLoaded', function() {
     // Vérifier si le token est présent dans le localStorage
    
@@ -36,6 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
         prenomtext.textContent = saveusername;
     }
 });
+
 
 //-----------------------------------récuperer l'image------------------------------------//
 
@@ -82,4 +83,45 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 });
+
+/**********************Supprimer Compte et Menu déroulant*********************/
+
+const menuButton = document.getElementById('pdp');
+const dropdownMenu = document.getElementById('dropdownMenu');
+
+menuButton.addEventListener('click', () => {
+    dropdownMenu.style.display = dropdownMenu.style.display === 'block' ? 'none' : 'block';
+});
+
+window.addEventListener('click', (event) => {
+    if (!menuButton.contains(event.target) && !dropdownMenu.contains(event.target)) {
+        dropdownMenu.style.display = 'none';
+    }
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+
+   
+    const saveusername = localStorage.getItem('storedusername');
+
+    if (saveusername) {
+        console.log(saveusername);
+        const Opt1 = document.getElementById('Opt1');
+        Opt1.addEventListener('click', () => {
+            // Code pour supprimer son nom
+            localStorage.removeItem('storedusername');
+            alert("Nom supprimé !");
+        });
+
+        const Opt2 = document.getElementById('Opt2');
+        Opt2.addEventListener('click', () => {
+            // Code pour supprimer sa pp
+            localStorage.removeItem('storedusername');
+            alert("Nom supprimé !");
+        });
+
+        const Opt3 = document.getElementById('Opt3');
+    }
+});
+
 

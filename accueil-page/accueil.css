@@ -17,14 +17,11 @@ header {
     background-image: url('../images/bandeau.jpg');
     background-size: cover; /* Pour couvrir toute la largeur et la hauteur */
     background-position: center;
-    top: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 30px;
-    background-color: #f4f4f4;
-    color: rgb(255, 255, 255);
-    margin-top: 0%;
+    margin-top: 0;
 }
 
 .header-right {
@@ -56,20 +53,36 @@ header {
 }
 
 .body_left, .body_right {
-    flex: 1; /* Chaque colonne prend une largeur égale */
+    flex: 1;
     padding: 10px;
     box-sizing: border-box;
     max-width: 50%; /* Assure que les colonnes ne dépassent pas la moitié de la largeur du conteneur */
-    overflow: hidden; /* Masque le débordement pour éviter les problèmes de mise en page */
-    word-wrap: break-word; /* Permet au texte de se renvoyer à la ligne */
-    hyphens: auto; /* Ajoute des césures automatiques pour le texte long */
+    overflow: hidden;
+    word-wrap: break-word; /* Permet au texte de revenir à la ligne */
+    hyphens: auto; /* Césures automatiques pour le texte long */
 }
 
 .separator {
     width: 1px;
     background-color: #ccc; /* Couleur de la ligne de séparation */
     height: 100%; /* La ligne occupe toute la hauteur du conteneur */
-    margin: 0 10px; /* Espacement autour de la ligne */
+    margin: 0 10px;
+}
+
+/* Animation de défilement */
+.scroll-element {
+    opacity: 0;
+    transform: translateX(-50px);
+    transition: transform 0.6s ease-out, opacity 0.6s ease-out;
+}
+
+.scroll-element.show {
+    opacity: 1;
+    transform: translateX(0);
+}
+
+.body_right .scroll-element {
+    transform: translateX(50px); /* Départ à droite pour les éléments de droite */
 }
 
 .body_left img, .body_right img {
@@ -92,19 +105,8 @@ header {
     text-align: center;
 }
 
-#about {
-    text-align: left;
-    color: #000000;
-}
-
-#services {
-    text-align: right;
-    color: rgb(0, 0, 0);
-}
-
-#contact {
-    text-align: center;
-    color: #000000;
+#about, #services, #contact {
+    margin-bottom: 30px;
 }
 
 footer {
@@ -143,4 +145,23 @@ footer {
 
 #logout-button:hover {
     background-color: #a53c3c;
+}
+
+/******************Supprimer Compte et Menu Déroulant***/
+.menu {
+    display: none;
+    position: absolute;
+    margin-left: 2%;
+    margin-top: 0.5%;
+    background: linear-gradient(to bottom, rgb(90, 6, 6) 0%, rgb(63, 12, 59) 50%, rgba(64, 70, 64, 0.527) 100%);
+    border: 1px solid #ccc;
+    z-index: 1;
+    margin-top: 10px;
+}
+.menu-item {
+    padding: 10px;
+    cursor: pointer;
+}
+.menu-item:hover {
+    background-color: #f0f0f0;
 }
