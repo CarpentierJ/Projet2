@@ -2,7 +2,7 @@ body {
     font-family: 'Arial', sans-serif;
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    background-color: #ffffff;
     color: #000000;
 }
 
@@ -27,7 +27,7 @@ header {
 .header-right {
     display: flex;
     align-items: center;
-    color: white;
+    color: rgb(255, 255, 255);
 }
 
 .header-right p {
@@ -43,6 +43,7 @@ header {
 .header-center {
     flex: 1;
     text-align: center;
+    color: white;
 }
 
 .hero {
@@ -103,9 +104,11 @@ header {
     margin: 40px auto;
     padding: 20px;
     text-align: center;
+    color:#000000;
 }
 
-#about, #services, #contact {
+
+#services, #contact {
     margin-bottom: 30px;
 }
 
@@ -130,23 +133,6 @@ footer {
 .footer-right {
     margin-right: 20px;
 }
-
-/* Bouton de déconnexion */
-#logout-button {
-    padding: 10px 20px;
-    background-color: #ff0000;
-    color: rgb(255, 255, 255);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 16px;
-    margin-right: 20px;
-}
-
-#logout-button:hover {
-    background-color: #a53c3c;
-}
-
 /******************Supprimer Compte et Menu Déroulant***/
 .menu {
     display: none;
@@ -164,4 +150,30 @@ footer {
 }
 .menu-item:hover {
     background-color: #f0f0f0;
+}
+
+/**Modifier le lien bleu voir profil**/
+
+a {
+    outline: none;
+    text-decoration: none; /* Pour enlever la soulignure par défaut du lien */
+    color: white; /* Pour que le texte des liens soit blanc */
+}
+
+a:focus {
+    outline: none;
+}
+
+a:active, a:visited {
+    color: white; /* Pour garder le texte blanc lors de l'interaction */
+}
+
+a:hover {
+    color: black; /* Exemple d'effet au survol */
+}
+
+#logout-button {
+    background-color: rgb(180, 38, 38);
+    color: #000000;
+    height: auto;
 }

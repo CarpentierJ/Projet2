@@ -16,35 +16,49 @@
             </div>
             <div class="header-right">
                 <p id="prenom">Prénom </p>
-                <img src="../mon-projet-backend/uploads/pdp.jpg" alt="Profil" class="logo" id="pdp">
-                <div id="dropdownMenu" class="menu">
-                    <div class="menu-item">Supprimer son Nom</div>
-                    <div class="menu-item">Supprimer son Image</div>
-                    <div class="menu-item">Supprimer son Compte</div>
-                </div>
+                <a href="../profil-page/profil.html"><img src="../mon-projet-backend/uploads/pdp.jpg" alt="Profil" class="logo" id="pdp"></a>
+                <!-- Importation des photos de profil -->
                 <input type="file" id="file-input" style="display: none;">
             </div>
         </div>
     </header>
 
-    <div class="content">
-        <!-- Bloc défilant avec content_row_wrapper -->
-        <div class="content_row_wrapper">
-            <img src="../images/accueil.jpg" alt="Image 1">
-            <p>Voici un texte plus long pour vérifier le comportement du texte lorsque le contenu dépasse la largeur de la colonne.</p>
-        </div>
-        <div class="content_row_wrapper">
-            <img src="../images/body_right.jpg" alt="Image 2">
+    <div class="hero">
+        <div class="body_left">
+            <h2>Ce site est la solution.</h2>
+            <img src="../images/accueil.jpg" alt="Image 1 de moitié gauche">
+            <p> Voici un texte plus long pour vérifier le comportement du texte lorsque le contenu dépasse la largeur de la colonne.</p>
+            <img src="../images/body_right.jpg" alt="Image 2 de côté gauche">
             <p>Ce site a uniquement été codé en utilisant du HTML, CSS et JS. Nous sommes fiers du résultat.</p>
         </div>
-        <div class="content_row_wrapper">
+        <div class="separator"></div> <!-- Ligne de séparation -->
+        <div class="body_right">
+            <h2>L'histoire, c'est important</h2>
             <img src="../images/Alan_Turing.jpeg" alt="Image d'Alan Turing">
-            <p>Durant la Seconde Guerre mondiale, il joue un rôle majeur dans la cryptanalyse de la machine Enigma utilisée par les armées allemandes...</p>
-        </div>
-        <div class="content_row_wrapper">
+            <p> Durant la Seconde Guerre mondiale, il joue un rôle majeur dans la cryptanalyse de la machine Enigma utilisée par les armées allemandes...</p>
             <img src="../images/Charles_Babbage.jpg" alt="Image de Charles Babbage">
             <p>Il est le premier à énoncer le principe d'un ordinateur. En 1834, pendant le développement d'une machine à calculer...</p>
         </div>
+    </div>
+
+    <div class="container">
+        <section id="about">
+            <h2>À propos</h2>
+            <p>N'hésitez pas à nous découvrir en cliquant sur le lien suivant :</p>
+            <p>
+                <a href="https://www.youtube.com/watch?v=s8927HywobY">Juste ici.</a>
+            </p>
+        </section>
+
+        <section id="services">
+            <h2>Nos Services</h2>
+            <p>Nous avons créé cette page pour un projet.</p>
+        </section>
+
+        <section id="contact">
+            <h2>Contactez-nous</h2>
+            <p>Vous pouvez nous joindre à gerarddpd@wanadoo.fr ou nous appeler au 01 02 03 04 05.</p>
+        </section>
     </div>
 
     <footer>

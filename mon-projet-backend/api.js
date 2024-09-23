@@ -196,6 +196,84 @@ app.post('/register', upload.single('capture'), async (req, res) => {
     });
 });
 
+//------------------------------------Supprimer Compte---------------------------------------------//
+
+// Route DELETE pour supprimer un compte utilisateur
+app.delete('/supprimer', async (req, res) => {
+    const { username } = req.body;  // Supposons que l'utilisateur envoie son nom d'utilisateur
+
+    // Vérifier si l'utilisateur existe dans la base de données
+    const sqlSelect = 'SELECT * FROM user WHERE Login = ?';
+    db.query(sqlSelect, [username], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Erreur serveur lors de la vérification de l\'utilisateur' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+
+        // Supprimer l'utilisateur de la base de données
+        const sqlDelete = 'DELETE FROM user WHERE Login = ?';
+        db.query(sqlDelete, [username], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Erreur lors de la suppression de l\'utilisateur' });
+            }
+
+            res.status(200).json({ message: 'Compte supprimé avec succès' });
+        });
+    });
+});
+
+//------------------------------------changer photo de profil------------------------------//
+
+// Route PUT pour changer la photo de profil
+app.put('/changer-photo', upload.single('profilePicture'), async (req, res) => {
+    const { username } = req.body; // Le nom d'utilisateur est envoyé dans le corps de la requête
+    const newCapture = req.file ? req.file.path : null; // Récupérer le fichier téléchargé
+
+    // Vérifier si l'utilisateur existe déjà
+    const sqlSelect = 'SELECT * FROM user WHERE Login = ?';
+    db.query(sqlSelect, [username], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Erreur serveur lors de la vérification de l\'utilisateur' });
+        }
+
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé' });
+        }
+
+        // Gérer l'absence de nouvelle capture (photo de profil)
+        if (!newCapture) {
+            return res.status(400).json({ message: 'Aucune nouvelle photo de profil fournie' });
+        }
+
+        // Retirer le chemin du système de fichiers si nécessaire
+        let pdpValue = newCapture.replace('/var/www/html/', ''); 
+        const imageUrl = `../${pdpValue}`; // Construction de l'URL pour la nouvelle image
+
+        // Mettre à jour la photo de profil dans la base de données
+        const sqlUpdate = 'UPDATE user SET PDP = ? WHERE Login = ?';
+        db.query(sqlUpdate, [imageUrl, username], (err, result) => {
+            if (err) {
+                console.log(err);
+                return res.status(500).json({ message: 'Erreur lors de la mise à jour de la photo de profil' });
+            }
+
+            res.status(200).json({ message: 'Photo de profil mise à jour avec succès' });
+        });
+    });
+});
+
+
+//changer nom d'utilisateur dans la base 
+
+
+
+
+
+
+
 // Démarrer le serveur
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {

@@ -41,6 +41,7 @@ document.getElementById('registerform').addEventListener('submit', async functio
     event.preventDefault();
 
     const username = document.getElementById('registerUsername').value;
+    localStorage.setItem('storedusername', username);
     const password = document.getElementById('registerPassword').value;
     const fileInput = document.getElementById('PDP');  // Récupérer l'élément input file
     const file = fileInput.files[0];  // Récupérer le premier fichier sélectionné
@@ -63,13 +64,17 @@ document.getElementById('registerform').addEventListener('submit', async functio
 
     const data = await response.json();
     if (response.ok) {
-        return 0;
+        localStorage.setItem('token', data.token);
+        attempts = 0; // Réinitialiser les tentatives après une connexion réussie
+        localStorage.removeItem('loginAttempts'); // Supprimer les tentatives du localStorage
+        localStorage.removeItem('blockTime'); // Supprimer le temps de blocage du localStorage
+        alert("inscription réussi merci " + username);
+        window.location.href = "accueil-page/accueil.html";
     } else {
+        attempts++;
         alert(`Erreur : ${data.message}`);
     }
 });
-
-
 ///----------------------------------------LOGIN-------------------------------------------------------------------///
 
 const maxAttempts = 3; // Nombre maximum de tentatives
@@ -98,6 +103,7 @@ document.getElementById('loginform').addEventListener('submit', async function(e
     localStorage.setItem('storedusername', username);
     /* */
     const password = document.getElementById('loginPassword').value;
+    
 
     try {
         const response = await fetch('http://192.168.64.194:3000/login', {

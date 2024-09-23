@@ -101,27 +101,5 @@ window.addEventListener('click', (event) => {
 
 document.addEventListener('DOMContentLoaded', function() {
 
-   
-    const saveusername = localStorage.getItem('storedusername');
-
-    if (saveusername) {
-        console.log(saveusername);
-        const Opt1 = document.getElementById('Opt1');
-        Opt1.addEventListener('click', () => {
-            // Code pour supprimer son nom
-            localStorage.removeItem('storedusername');
-            alert("Nom supprimé !");
-        });
-
-        const Opt2 = document.getElementById('Opt2');
-        Opt2.addEventListener('click', () => {
-            // Code pour supprimer sa pp
-            localStorage.removeItem('storedusername');
-            alert("Nom supprimé !");
-        });
-
-        const Opt3 = document.getElementById('Opt3');
-    }
+    const Opt1 = document.getElementById('Opt1');
 });
-
-
