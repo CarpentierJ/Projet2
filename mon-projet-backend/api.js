@@ -265,13 +265,80 @@ app.put('/changer-photo', upload.single('profilePicture'), async (req, res) => {
     });
 });
 
+//-------------------Changer Mot De Passe--------------------------//
 
-//changer nom d'utilisateur dans la base 
+app.put('/changer-motdepasse', async (req, res) => {
+    const { username, oldPassword, newPassword } = req.body;
 
+    if (!username || !oldPassword || !newPassword) {
+        return res.status(400).json({ message: 'Veuillez fournir toutes les informations requises.' });
+    }
 
+    // Rechercher l'utilisateur dans la base de données
+    const sqlSelect = 'SELECT * FROM user WHERE Login = ?';
+    db.query(sqlSelect, [username], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Erreur serveur lors de la recherche de l\'utilisateur.' });
+        }
 
+        if (results.length === 0) {
+            return res.status(404).json({ message: 'Utilisateur non trouvé.' });
+        }
 
+        const user = results[0];
 
+        // Vérifier si l'ancien mot de passe est correct
+        const passwordMatch = bcrypt.compareSync(oldPassword, user.MDP);
+        if (!passwordMatch) {
+            return res.status(401).json({ message: 'L\'ancien mot de passe est incorrect.' });
+        }
+
+        // Hasher le nouveau mot de passe
+        const hashedNewPassword = bcrypt.hashSync(newPassword, 10);
+
+        // Mettre à jour le mot de passe dans la base de données
+        const sqlUpdate = 'UPDATE user SET MDP = ? WHERE Login = ?';
+        db.query(sqlUpdate, [hashedNewPassword, username], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Erreur lors de la mise à jour du mot de passe.' });
+            }
+
+            res.status(200).json({ message: 'Mot de passe mis à jour avec succès.' });
+        });
+    });
+});
+
+//---------------------------------Changer Nom------------------------------------------//
+
+app.put('/changer-nom', (req, res) => {
+    const { username, newUsername } = req.body;
+
+    if (!username || !newUsername) {
+        return res.status(400).json({ message: 'Veuillez fournir les deux noms d\'utilisateur.' });
+    }
+
+    // Vérifier si le nouveau nom d'utilisateur existe déjà
+    const sqlCheck = 'SELECT * FROM user WHERE Login = ?';
+    db.query(sqlCheck, [newUsername], (err, results) => {
+        if (err) {
+            return res.status(500).json({ message: 'Erreur serveur lors de la vérification du nouveau nom d\'utilisateur.' });
+        }
+
+        if (results.length > 0) {
+            return res.status(400).json({ message: 'Le nouveau nom d\'utilisateur est déjà pris.' });
+        }
+
+        // Mettre à jour le nom d'utilisateur
+        const sqlUpdate = 'UPDATE user SET Login = ? WHERE Login = ?';
+        db.query(sqlUpdate, [newUsername, username], (err, result) => {
+            if (err) {
+                return res.status(500).json({ message: 'Erreur lors de la mise à jour du nom d\'utilisateur.' });
+            }
+
+            res.status(200).json({ message: 'Nom d\'utilisateur mis à jour avec succès.' });
+        });
+    });
+});
 
 
 // Démarrer le serveur

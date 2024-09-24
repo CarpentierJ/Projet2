@@ -41,90 +41,84 @@ document.getElementById('changer-photo').addEventListener('change', (event) => {
     }
 });
 
-// Gestion du changement de nom
+//--------------------------changer le nom--------------------------------//
+
 document.getElementById('edit-name-button').addEventListener('click', () => {
-    const newName = prompt("Entrez le nouveau nom:");
-    if (newName) {
+    const oldUsername = localStorage.getItem('storedusername'); // Récupérer l'ancien nom d'utilisateur à partir du localStorage
+    const newUsername = prompt("Entrez le nouveau nom:");
+
+    if (newUsername && oldUsername) {
         // Met à jour le nom sur l'interface
-        document.getElementById('username').textContent = newName;
-        localStorage.setItem('storedusername', newName);
+        document.getElementById('username').textContent = newUsername;
+        localStorage.setItem('storedusername', newUsername);
 
         // Envoie une requête PUT au serveur pour mettre à jour le nom dans la base de données
-        fetch('http://localhost:3000/changer-nom', {
+        fetch('http://192.168.64.194:3000/changer-nom', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify({ username: 'ancienNom', newUsername: newName })
+            body: JSON.stringify({ username: oldUsername, newUsername: newUsername }) // Envoie l'ancien et le nouveau nom
         })
         .then(response => response.json())
         .then(data => {
-            if (data.success) {
+            if (data.message === "Nom d'utilisateur mis à jour avec succès.") {
                 alert("Nom mis à jour avec succès !");
             } else {
-                alert("Erreur lors de la mise à jour du nom.");
+                alert("Erreur lors de la mise à jour du nom: " + data.message);
+                // Optionnel: rétablir l'ancien nom si l'erreur se produit
+                document.getElementById('username').textContent = oldUsername;
+                localStorage.setItem('storedusername', oldUsername);
             }
         })
         .catch(error => {
             console.error("Erreur lors de la mise à jour du nom:", error);
+            alert("Erreur lors de la mise à jour du nom.");
+            // Optionnel: rétablir l'ancien nom en cas d'erreur
+            document.getElementById('username').textContent = oldUsername;
+            localStorage.setItem('storedusername', oldUsername);
         });
+    } else {
+        alert("Le nom ne peut pas être vide.");
     }
 });
 
 
-/***********************************************Gestion du changement de mot de passe*////////////////////////////////////////////////////////////////////////////////
-document.getElementById('change-password-button').addEventListener('click', () => {
-    const oldPassword = prompt("Entrez l'ancien mot de passe:");
-    const userId = localStorage.getItem('storedusername'); // Récupérer l'ID utilisateur
+/***********************************************Gestion du changement de mot de passe*//////////
 
-    if (oldPassword) {
-        // Vérification de l'ancien mot de passe sur le serveur
-        fetch(`http://192.168.64.194:3000/user/${userId}/verify-password`, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify({ password: oldPassword })
-        })
-        .then(response => {
-            if (!response.ok) {
-                throw new Error('Erreur dans la vérification du mot de passe: ' + response.status);
-            }
-            return response.json();
-        })
-        .then(data => {
-            if (data.valid) { // Supposons que la réponse contienne un champ 'valid'
-                const newPassword = prompt("Entrez le nouveau mot de passe:");
-                if (newPassword) {
-                    // Logique pour sauvegarder le nouveau mot de passe sur le serveur
-                    fetch(`http://192.168.64.194:3000/user/${userId}/change-password`, {
-                        method: 'PATCH',
-                        headers: {
-                            'Content-Type': 'application/json'
-                        },
-                        body: JSON.stringify({ newPassword: newPassword })
-                    })
-                    .then(response => {
-                        if (!response.ok) {
-                            throw new Error('Erreur lors du changement de mot de passe: ' + response.status);
-                        }
-                        alert("Mot de passe changé !");
-                    })
-                    .catch(error => {
-                        console.error('Erreur:', error);
-                        alert("Erreur lors du changement de mot de passe.");
-                    });
+document.getElementById('change-password-button').addEventListener('click', () => {
+    const username = localStorage.getItem('storedusername'); // Récupérer l'ID utilisateur (ou login)
+    const oldPassword = prompt("Entrez l'ancien mot de passe:");
+    
+    if (oldPassword && username) {
+        const newPassword = prompt("Entrez le nouveau mot de passe:");
+        if (newPassword) {
+            // Envoyer la requête PUT pour changer le mot de passe
+            fetch(`http://192.168.64.194:3000/changer-motdepasse`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ username: username, oldPassword: oldPassword, newPassword: newPassword }) // Envoyer les infos nécessaires
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Erreur lors du changement de mot de passe: ' + response.status);
                 }
-            } else {
-                alert("L'ancien mot de passe est incorrect.");
-            }
-        })
-        .catch(error => {
-            console.error('Erreur:', error);
-            alert("Erreur lors de la vérification de l'ancien mot de passe.");
-        });
+                return response.json();
+            })
+            .then(data => {
+                alert(data.message); // Afficher le message de succès ou d'erreur reçu du serveur
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert("Erreur lors du changement de mot de passe.");
+            });
+        } else {
+            alert("Le nouveau mot de passe ne peut pas être vide.");
+        }
     } else {
-        alert("L'ancien mot de passe ne peut pas être vide.");
+        alert("L'ancien mot de passe ou le nom d'utilisateur ne peut pas être vide.");
     }
 });
 /***********************************************************************************/
@@ -148,6 +142,8 @@ document.addEventListener('DOMContentLoaded', () => {
                         // Assurez-vous que `data.PDP` est une URL ou un chemin valide pour l'image
                         // Vous pouvez éventuellement ajuster le chemin si nécessaire
                         imgElement.src = data.PDP;
+                        imageUrl = data.PDP
+                        document.body.style.backgroundImage = "url('" + imageUrl + "')";
                     } else {
                         imgElement.alt = 'Photo de profil non disponible';
                         console.error('Photo de profil non disponible.');
