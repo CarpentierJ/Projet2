@@ -231,3 +231,14 @@ document.getElementById("supprimer-compte").addEventListener("click", function()
         alert('Une erreur est survenue lors de la suppression du compte.');
     });
 });
+
+/* Vérification de connexion*/
+document.addEventListener('DOMContentLoaded', function() {
+    // Vérifier si le token est présent dans le localStorage
+    const token = localStorage.getItem('token');
+    
+    // Si le token n'est pas présent, rediriger vers la page de connexion
+    if (!token) {
+        window.location.href = "../index.html"; // Rediriger vers la page de connexion
+    }
+});
