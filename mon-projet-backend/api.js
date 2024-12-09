@@ -40,13 +40,15 @@ app.use('/uploads', express.static(uploadDir));
 app.use(cors());
 app.use(express.json());
 
-const db = mysql.createConnection({
-    host: 'localhost',
+const connection = mysql.createConnection({
+    host: '192.168.64.194',
+    port: 4000, 
     user: 'root',
-    password: 'root',
-    database: 'utilisateur'
+    password: 'legrosroot',
+    database: 'utilisateur' 
 });
-db.connect(err => {
+
+connection.connect((err) => {
     if (err) {
         console.error('Erreur de connexion à la base de données :', err);
     } else {
@@ -342,7 +344,7 @@ app.put('/changer-nom', (req, res) => {
 
 
 // Démarrer le serveur
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 3306;
 app.listen(PORT, () => {
     console.log(`Serveur en écoute sur le port ${PORT}`);
 });
